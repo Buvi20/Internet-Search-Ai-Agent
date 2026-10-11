@@ -1,0 +1,152 @@
+{
+  "name": "Internet Search Ai Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Welcome!👋🏽 I’m Bukola’s Research Assistant.\nBuilt to search, research, and bring you the information you need, including the latest updates from across the web.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        16
+      ],
+      "id": "65c19ae5-2664-4988-9188-f85c8526d8f3",
+      "name": "When chat message received",
+      "webhookId": "9b70a8de-90c5-44af-bbf5-e35cff36d5b4"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a helpful AI assistant with access to internet search.\n\nWhen a user asks a question that requires current, recent, or up-to-date information, use the Tavily search tool to search the internet before answering.\n\nAlways use the information returned by the search tool to answer questions about recent events, current news, prices, trends, companies, or anything that may have changed.\n\nIf the information does not require an internet search, answer normally."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        288,
+        0
+      ],
+      "id": "69bd6df1-dca4-4f4c-b193-e86c9ed29897",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        160,
+        208
+      ],
+      "id": "36659cac-7373-432b-98ce-5469c3f89c46",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "Xo8d3Bz6pffFlOMR",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', `Search the internet for current and up-to-date information. Use this tool whenever the user’s question requires recent information, news, current events, facts that may have changed, or information you are not certain about.`, 'string') }}",
+        "options": {}
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavilyTool",
+      "typeVersion": 1,
+      "position": [
+        464,
+        272
+      ],
+      "id": "b6d154e2-8c01-412e-918a-e33bebb306c9",
+      "name": "Search in Tavily",
+      "credentials": {
+        "tavilyApi": {
+          "id": "26IWqZr6XwFd3gTo",
+          "name": "Tavily account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        320,
+        192
+      ],
+      "id": "1b6d44b4-b3c3-4c72-b845-210476a176b8",
+      "name": "Simple Memory"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search in Tavily": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "f9484bbc-7040-433b-ba7e-91ed45fbc65f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7b6f0dde36ed1967a9e4b098ed1504c063837e1b87a859ec46824c53333cf007"
+  },
+  "nodeGroups": [],
+  "id": "adqhCMZFjEYiFUJE",
+  "tags": []
+}
